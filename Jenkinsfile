@@ -1,9 +1,5 @@
 node {
-  stage("Clone the project") {
-    git branch: 'main', url: 'https://github.com/sujaypaul/Rest-Api-Endpoint.git'
-  }
-
-  stage("Compilation") {
+   stage("Compilation") {
     sh "./mvnw clean install -DskipTests"
   }
 
