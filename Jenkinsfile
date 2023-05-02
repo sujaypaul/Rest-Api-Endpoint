@@ -1,26 +1,18 @@
-pipeline {
-	agent any
-	environment {
-		mavenHome = tool 'jenkins-maven'
-	}
-	tools {
-		jdk 'java-11'
-	}
-	stages {
-		stage('Build'){
-			steps {
-				bat "mvn clean install"
-			}
-		}
-		stage('Test'){
-			steps{
-				bat "mvn test"
-			}
-		}
-		stage('Deploy') {
-			steps {
-			    bat "mvn jar:jar deploy:deploy"
-			}
-		}
-	}
+node {
+  stage("Clone the project") {
+    git branch: 'main', url: 'https://github.com/sujaypaul/Rest-Api-Endpoint.git'
+  }
+
+  stage("Compilation") {
+    sh "./mvnw clean install -DskipTests"
+  }
+
+  stage("Tests and Deployment") {
+    stage("Runing unit tests") {
+      sh "./mvnw test -Punit"
+    }
+    stage("Deployment") {
+      sh 'nohup ./mvnw spring-boot:run -Dserver.port=8001 &'
+    }
+  }
 }
